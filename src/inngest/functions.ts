@@ -15,7 +15,7 @@ export const helloWorld = inngest.createFunction(
   { event: "test/hello.world" },
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
-      const sandbox = await Sandbox.create("vibe-next-js-ramatya-2");
+      const sandbox = await Sandbox.create("vibe-next-js-ramatya-3");
       return sandbox.sandboxId;
     });
 
@@ -143,7 +143,7 @@ export const helloWorld = inngest.createFunction(
     const network = createNetwork({
       name: "coding-agent-network",
       agents: [codeAgent],
-      maxIter: 10, // give it a bit more room
+      maxIter: 5, // give it a bit more room
       router: async ({ network }) => {
         if (network.state.data.summary) return;
         return codeAgent;
