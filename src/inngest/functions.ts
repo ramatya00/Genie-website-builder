@@ -4,22 +4,29 @@ import {
   createTool,
   createNetwork,
   openai,
+  Tool,
 } from "@inngest/agent-kit";
 import { Sandbox } from "@e2b/code-interpreter";
 import { getSandbox, lastAssistanceTextMessageContent } from "./utils";
 import { z } from "zod";
 import { PROMPT } from "@/lib/prompt";
+import prisma from "@/lib/db";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+interface AgentState {
+  summary: string;
+  files: { [path: string]: string };
+}
+
+export const codeAgentFunction = inngest.createFunction(
+  { id: "code-agent" },
+  { event: "code-agent/run" },
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("vibe-next-js-ramatya-3");
       return sandbox.sandboxId;
     });
 
-    const codeAgent = createAgent({
+    const codeAgent = createAgent<AgentState>({
       name: "code-agent",
       description: "An expert coding agent",
       system: PROMPT,
@@ -74,7 +81,10 @@ export const helloWorld = inngest.createFunction(
               })
             ),
           }),
-          handler: async ({ files }, { step, network }) => {
+          handler: async (
+            { files },
+            { step, network }: Tool.Options<AgentState>
+          ) => {
             const newFiles = await step?.run(
               "createOrUpdateFiles",
               async () => {
@@ -125,37 +135,68 @@ export const helloWorld = inngest.createFunction(
 
       lifecycle: {
         onResponse: async ({ result, network }) => {
-          const text = lastAssistanceTextMessageContent(result);
-          if (text && network && text.includes("<text_summary>")) {
-            network.state.data.summary = text;
+          const lastAssistantMessageText =
+            lastAssistanceTextMessageContent(result);
+
+          if (lastAssistantMessageText && network) {
+            if (lastAssistantMessageText.includes("<task_summary>")) {
+              network.state.data.summary = lastAssistantMessageText;
+            }
           }
+
           return result;
         },
       },
     });
 
-    // normalize the input BEFORE running the network
-    const goal =
-      typeof event.data?.value === "string"
-        ? event.data.value.trim()
-        : JSON.stringify(event.data?.value ?? "");
-
-    const network = createNetwork({
+    const network = createNetwork<AgentState>({
       name: "coding-agent-network",
       agents: [codeAgent],
-      maxIter: 5, // give it a bit more room
+      maxIter: 5,
       router: async ({ network }) => {
-        if (network.state.data.summary) return;
+        const summary = network.state.data.summary;
+
+        if (summary) return;
         return codeAgent;
       },
     });
 
-    const result = await network.run(goal);
+    const result = await network.run(event.data.value);
+
+    const isError =
+      !result.state.data.summary ||
+      Object.keys(result.state.data.files || {}).length === 0;
 
     const sandbloxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSandbox(sandboxId);
       const host = sandbox.getHost(3000);
       return `https://${host}`;
+    });
+
+    await step.run("save-result", async () => {
+      if (isError) {
+        return await prisma.message.create({
+          data: {
+            content: "Something went wrong. Please try again",
+            role: "ASSISTANT",
+            type: "ERROR",
+          },
+        });
+      }
+      return await prisma.message.create({
+        data: {
+          content: result.state.data.summary,
+          role: "ASSISTANT",
+          type: "RESULT",
+          fragment: {
+            create: {
+              sandboxUrl: sandbloxUrl,
+              title: "Fragment",
+              files: result.state.data.files,
+            },
+          },
+        },
+      });
     });
 
     return {
