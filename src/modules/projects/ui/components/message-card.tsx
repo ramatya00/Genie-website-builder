@@ -70,7 +70,13 @@ const AssistantMessage = ({
   return (
     <div className={cn("flex flex-col group px-2 pb-4 max-w-[90%]")}>
       <div className="flex items-center gap-2 pl-2 mb-2">
-        <Image src="/logo.svg" alt="Genie" width={20} height={20} />
+        <Image
+          src="/logo.svg"
+          alt="Genie"
+          width={20}
+          height={20}
+          className="shrink-0"
+        />
         <span className="text-sm font-medium">Genie</span>
         <span className="text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
           {format(createdAt, "HH:mm 'on' MMM dd yyyy")}
