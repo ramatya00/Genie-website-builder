@@ -11,6 +11,7 @@ import {
 import MessagesContainer from "../components/messages-container";
 import { Fragment } from "@prisma/client";
 import ProjectHeader from "../components/project-header";
+import FragmentWeb from "../components/fragment-web";
 
 interface Props {
   projectId: string;
@@ -21,7 +22,7 @@ export default function ProjectView({ projectId }: Props) {
     <div className="h-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel
-          defaultSize={35}
+          defaultSize={30}
           minSize={20}
           className="flex flex-col min-h-0"
         >
@@ -37,8 +38,8 @@ export default function ProjectView({ projectId }: Props) {
           </Suspense>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={65} minSize={50} className="">
-          TODO: PREVIEW
+        <ResizablePanel defaultSize={70} minSize={50} className="">
+          {!!activeFragment && <FragmentWeb data={activeFragment} />}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
