@@ -29,15 +29,20 @@ export default function MessagesContainer({
   );
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastAssistantMessageIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     const lastAssistantMessage = messages.findLast(
-      (message) => message.role === "ASSISTANT" && !!message.fragment
+      (message) => message.role === "ASSISTANT"
     );
-    if (lastAssistantMessage) {
+    if (
+      lastAssistantMessage?.fragment &&
+      lastAssistantMessage.id !== lastAssistantMessageIdRef.current
+    ) {
       setActiveFragment(lastAssistantMessage.fragment);
+      lastAssistantMessageIdRef.current = lastAssistantMessage.id;
     }
-  }, [messages, setActiveFragment]);
+  }, [setActiveFragment, messages]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,8 +62,16 @@ export default function MessagesContainer({
               role={message.role}
               fragment={message.fragment}
               createdAt={message.createdAt}
-              isActiveFragment={message.fragment === activeFragment}
-              onFragmentClick={() => setActiveFragment(message.fragment)}
+              isActiveFragment={
+                message.fragment && activeFragment
+                  ? message.fragment.id === activeFragment.id
+                  : false
+              }
+              onFragmentClick={() => {
+                if (message.fragment) {
+                  setActiveFragment(message.fragment);
+                }
+              }}
               type={message.type}
             />
           ))}

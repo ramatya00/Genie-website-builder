@@ -26,17 +26,24 @@ export const projectsRouter = createTRPCRouter({
       return existingProject;
     }),
 
+  // Fixed: Now actually returns multiple projects
   getMany: baseProcedure
     .input(
-      z.object({
-        projectId: z.string().min(1, "Project ID required."),
-      })
+      z
+        .object({
+          // Add optional filters if needed
+          limit: z.number().min(1).max(100).default(50).optional(),
+          offset: z.number().min(0).default(0).optional(),
+        })
+        .optional()
     )
-    .query(async ({ input }) => {
-      return await prisma.project.findUnique({
-        where: {
-          id: input.projectId,
+    .query(async ({ input = {} }) => {
+      return await prisma.project.findMany({
+        orderBy: {
+          createdAt: "desc",
         },
+        take: input.limit,
+        skip: input.offset,
       });
     }),
 
