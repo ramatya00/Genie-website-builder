@@ -13,6 +13,7 @@ import { Form, FormField } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { PROJECT_TEMPLATES } from "@/modules/home/constants";
+import { useClerk } from "@clerk/nextjs";
 
 const formSchema = z.object({
   value: z
@@ -32,6 +33,7 @@ export default function ProjectForm() {
   const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const clerk = useClerk();
   const createProject = useMutation(
     trpc.projects.create.mutationOptions({
       onSuccess: (data) => {
@@ -40,6 +42,7 @@ export default function ProjectForm() {
         router.push(`/projects/${data.id}`);
       },
       onError: (error) => {
+        if (error.data?.code === "UNAUTHORIZED") clerk.openSignIn();
         // TODO: Redirect to pricing page if specific error
         toast.error(error.message);
       },
