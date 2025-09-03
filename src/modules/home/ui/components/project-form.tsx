@@ -123,6 +123,7 @@ export default function ProjectForm() {
               key={template.title}
               variant="outline"
               onClick={() => onSelect(template.prompt)}
+              className="text-md"
             >
               {template.emoji} {template.title}
             </Button>

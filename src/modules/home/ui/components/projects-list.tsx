@@ -11,8 +11,8 @@ export default function ProjectsList() {
   const trpc = useTRPC();
   const { data: projects } = useQuery(trpc.projects.getMany.queryOptions());
   return (
-    <div className="w-full bg-white dark:bg-sidebar rounded-xl p-8 border flex flex-col gap-y-6 sm:gap-y-4">
-      <h2 className="text-2xl font-semibold ">Saved Projects</h2>
+    <div className="w-full dark:bg-sidebar rounded-xl p-8 border flex flex-col gap-y-6 sm:gap-y-4">
+      <h2 className="text-2xl font-semibold ">History</h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {projects?.length === 0 && (
           <div className="col-span-full text-center">
@@ -36,7 +36,9 @@ export default function ProjectsList() {
                   className="object-contain"
                 />
                 <div className="flex flex-col">
-                  <h3 className="truncate font-medium">{project.name}</h3>
+                  <h3 className="truncate font-medium text-xl">
+                    {project.name}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     {formatDistanceToNow(project.updatedAt, {
                       addSuffix: true,
