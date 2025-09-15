@@ -38,13 +38,17 @@ export default function ProjectForm() {
     trpc.projects.create.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries(trpc.projects.getMany.queryOptions());
-        // TODO: Invalidate usage status
+        queryClient.invalidateQueries(trpc.usage.status.queryOptions());
         router.push(`/projects/${data.id}`);
       },
       onError: (error) => {
         if (error.data?.code === "UNAUTHORIZED") clerk.openSignIn();
-        // TODO: Redirect to pricing page if specific error
         toast.error(error.message);
+        if (error.data?.code === "TOO_MANY_REQUESTS") {
+          setTimeout(() => {
+            router.push("/pricing");
+          }, 1500);
+        }
       },
     })
   );

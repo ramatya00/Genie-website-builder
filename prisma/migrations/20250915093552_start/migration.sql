@@ -2,7 +2,18 @@
 CREATE TYPE "public"."MessageRole" AS ENUM ('USER', 'ASSISTANT');
 
 -- CreateEnum
-CREATE TYPE "public"."MessageType" AS ENUM ('RESULT', 'ERROR');
+CREATE TYPE "public"."MessageType" AS ENUM ('PROMPT', 'RESULT', 'ERROR');
+
+-- CreateTable
+CREATE TABLE "public"."Project" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "public"."Message" (
@@ -12,6 +23,7 @@ CREATE TABLE "public"."Message" (
     "role" "public"."MessageRole" NOT NULL,
     "type" "public"."MessageType" NOT NULL,
     "content" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
 
     CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
@@ -21,10 +33,10 @@ CREATE TABLE "public"."Fragment" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "messageId" TEXT NOT NULL,
     "sandboxUrl" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "files" JSONB NOT NULL,
+    "messageId" TEXT NOT NULL,
 
     CONSTRAINT "Fragment_pkey" PRIMARY KEY ("id")
 );
@@ -33,4 +45,7 @@ CREATE TABLE "public"."Fragment" (
 CREATE UNIQUE INDEX "Fragment_messageId_key" ON "public"."Fragment"("messageId");
 
 -- AddForeignKey
-ALTER TABLE "public"."Fragment" ADD CONSTRAINT "Fragment_messageId_fkey" FOREIGN KEY ("messageId") REFERENCES "public"."Message"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Message" ADD CONSTRAINT "Message_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Fragment" ADD CONSTRAINT "Fragment_messageId_fkey" FOREIGN KEY ("messageId") REFERENCES "public"."Message"("id") ON DELETE CASCADE ON UPDATE CASCADE;
