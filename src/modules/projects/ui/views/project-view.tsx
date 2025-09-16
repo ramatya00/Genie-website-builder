@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 import {
   ResizableHandle,
@@ -38,16 +39,20 @@ export default function ProjectView({ projectId }: Props) {
           minSize={20}
           className="flex flex-col min-h-0"
         >
-          <Suspense fallback={<p>Loading project..</p>}>
-            <ProjectHeader projectId={projectId} />
-          </Suspense>
-          <Suspense fallback={<p>Loading messages..</p>}>
-            <MessagesContainer
-              projectId={projectId}
-              activeFragment={activeFragment}
-              setActiveFragment={setActiveFragment}
-            />
-          </Suspense>
+          <ErrorBoundary fallback={<p>Something went wrong.</p>}>
+            <Suspense fallback={<p>Loading project..</p>}>
+              <ProjectHeader projectId={projectId} />
+            </Suspense>
+          </ErrorBoundary>
+          <ErrorBoundary fallback={<p>Something went wrong.</p>}>
+            <Suspense fallback={<p>Loading messages..</p>}>
+              <MessagesContainer
+                projectId={projectId}
+                activeFragment={activeFragment}
+                setActiveFragment={setActiveFragment}
+              />
+            </Suspense>
+          </ErrorBoundary>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={70} minSize={50}>

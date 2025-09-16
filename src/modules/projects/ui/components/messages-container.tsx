@@ -22,8 +22,7 @@ export default function MessagesContainer({
     trpc.messages.getMany.queryOptions(
       { projectId },
       {
-        // TODO: Temporarily live message update
-        refetchInterval: 5000,
+        refetchInterval: 3000,
       }
     )
   );
