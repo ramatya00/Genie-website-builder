@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GENIE - AI WEBSITE BUILDER
 
-## Getting Started
+**Link:** [genie-website-builder.vercel.app](https://genie-website-builder.vercel.app)
 
-First, run the development server:
+<img src="./public/preview-readme.png" alt="Genie AI Website Builder" width="768" height="auto">
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Purpose
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+An AI-powered website builder that enables users to create web applications through natural language prompts. Similar to Lovable, Genie leverages AI code assistance to build functional websites and web applications, providing an intuitive interface for non-technical users to bring their web ideas to life using conversational AI.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend:** Next.js 15, TypeScript, Tailwind CSS 4, shadcn/ui
+- **Backend:** Next.js API Routes, tRPC, TanStack Query
+- **Authentication:** Clerk
+- **Database:** Prisma ORM with PostgreSQL
+- **Billing:** Clerk Billing
+- **AI Integration:** OpenAI GPT-4, Inngest Agent Kit
+- **Code Execution:** E2B Code Interpreter Sandbox
+- **State Management:** TanStack Query
+- **Deployment:** Vercel
 
-## Learn More
+## Key Features
 
-To learn more about Next.js, take a look at the following resources:
+### AI-Powered Website Generation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Natural language prompts to website conversion
+- Real-time code generation and execution
+- Live preview in isolated sandbox environments
+- Support for modern web technologies (Next.js, React, TypeScript)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Project Management (Authenticated Users)
 
-## Deploy on Vercel
+- Create new projects with descriptive prompts
+- View project history and previous generations
+- Iterate on existing projects with additional prompts
+- Manage multiple projects simultaneously
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Interactive Chat Interface
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Conversational UI for project refinement
+- Message history for each project
+- Real-time feedback during generation process
+- Error handling and retry mechanisms
+
+### Sandbox Integration
+
+- Secure code execution in E2B sandboxes
+- Live preview URLs for generated applications
+- File system management and code persistence
+- Terminal access for debugging and customization
+
+### Usage Management
+
+- Credit-based system for AI generations
+- Usage tracking and limits
+- Billing integration through Clerk
+- Rate limiting for API protection
+
+## Technical Features
+
+### AI Agent System
+
+- **Multi-Agent Architecture:** Uses Inngest Agent Kit for orchestrated AI workflows
+- **Code Generation:** GPT-4 powered code generation with specialized prompts
+- **Sandbox Integration:** Seamless integration with E2B for secure code execution
+- **Tool Integration:** Terminal access, file operations, and code compilation
+
+### Backend Architecture
+
+- **tRPC:** End-to-end type-safe API layer
+- **Prisma ORM:** Type-safe database operations
+- **Server Actions:** Secure database mutations
+- **Background Jobs:** Inngest for asynchronous AI processing
+
+### Frontend Experience
+
+- **Real-time Updates:** Live chat interface with streaming responses
+- **Responsive Design:** Mobile-first design with Tailwind CSS
+- **Component Library:** shadcn/ui for consistent UI components
+- **State Management:** TanStack Query for efficient data fetching and caching
+
+### Security & Performance
+
+- **Authentication:** Clerk-based user management
+- **Rate Limiting:** Flexible rate limiting for API endpoints
+- **Error Boundaries:** Comprehensive error handling
+- **Type Safety:** End-to-end TypeScript implementation
+
+## Development Process
+
+1. **Initial Setup**
+
+   - Next.js 15 with Turbopack for fast development
+   - Prisma schema design for projects, messages, and usage tracking
+   - Clerk authentication integration
+   - tRPC setup for type-safe APIs
+
+2. **AI Integration**
+
+   - OpenAI API integration with specialized prompts
+   - Inngest Agent Kit setup for multi-agent workflows
+   - E2B sandbox configuration for secure code execution
+   - Tool creation for terminal, file operations, and code management
+
+3. **Core Features Implementation**
+
+   - Project creation and management system
+   - Chat interface for interactive AI conversations
+   - Real-time code generation and preview
+   - Usage tracking and billing integration
+
+4. **UI/UX Development**
+
+   - Responsive chat interface design
+   - Project dashboard and navigation
+   - Loading states and error handling
+   - Toast notifications for user feedback
+
+5. **Testing & Optimization**
+   - Error boundary implementation
+   - Rate limiting and usage constraints
+   - Performance optimization
+   - Deployment configuration

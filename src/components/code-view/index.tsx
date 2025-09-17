@@ -1,5 +1,5 @@
 import Prism from "prismjs";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-typescript";
 import "prismjs/components/prism-jsx";
@@ -13,13 +13,20 @@ interface Props {
 }
 
 const CodeView = ({ code, language }: Props) => {
+  const codeRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
-    Prism.highlightAll();
-  }, []);
+    if (codeRef.current) {
+      // More efficient: highlight only this specific element
+      Prism.highlightElement(codeRef.current);
+    }
+  }, [code, language]);
 
   return (
     <pre className={`p-2 bg-transparent border-none rounded-none m-0 text-xs`}>
-      <code className={`language-${language}`}>{code}</code>
+      <code ref={codeRef} className={`language-${language}`}>
+        {code}
+      </code>
     </pre>
   );
 };
